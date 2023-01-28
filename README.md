@@ -4,7 +4,28 @@
 
 # Clothing Shop API
 
-1. Run the database:
+1. Clone the repository:
+
+```
+git clone https://github.com/albertost5/nest-clothing-shop.git
+```
+
+2. Install dependencies:
+
+```
+yarn install
+```
+
+3. Clone file .env.example and rename to .env
+4. Change the environment vars.
+5. Run the database:
+
 ```
 docker-compose up -d
-``` 
+```
+
+6. Run the application:
+
+```
+yarn dev
+```
