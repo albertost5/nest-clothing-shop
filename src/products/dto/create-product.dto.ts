@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsIn,
@@ -41,4 +42,8 @@ export class CreateProductDto {
   @IsIn(['men', 'women', 'kid', 'unisex'])
   @MinLength(1)
   gender: string;
+
+  @IsArray({ each: true })
+  @IsOptional()
+  tags?: string[];
 }
