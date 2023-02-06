@@ -29,3 +29,8 @@ docker-compose up -d
 ```
 yarn dev
 ```
+
+7. Execute seed (to fill the db with data):
+```
+http://localhost:3000/api/seed
+```
