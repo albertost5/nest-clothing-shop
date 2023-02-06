@@ -102,7 +102,7 @@ export class ProductsService {
       id,
       ...newProductProperties,
     });
-    
+
     if (!product)
       throw new NotFoundException(`Product with id ${id} not found.`);
 
@@ -112,23 +112,24 @@ export class ProductsService {
     await queryRunner.startTransaction();
 
     try {
-
-      if( images ) {
+      if (images) {
         // Delete the previous images from the DB
         await queryRunner.manager.delete(ProductImage, { product: id });
         // Add the images from the DTO to the product to update
-        product.images = images.map( imgUrl => this.productImageRepository.create({url: imgUrl}));
+        product.images = images.map((imgUrl) =>
+          this.productImageRepository.create({ url: imgUrl }),
+        );
       }
-      
+
       // Save the product but it's not done until the transaction is committed
-      await queryRunner.manager.save( product );
-      
+      await queryRunner.manager.save(product);
+
       // Commit the transaction to make changes in the db
       await queryRunner.commitTransaction();
 
       // End db conex
       await queryRunner.release();
-      
+
       return this.findOnePlain(id);
     } catch (error) {
       await queryRunner.rollbackTransaction();
@@ -150,5 +151,14 @@ export class ProductsService {
       throw new BadRequestException(`${error.detail}`);
     this.logger.error(error);
     throw new InternalServerErrorException('Error creating the product');
+  }
+
+  async deleteAllProducts() {
+    const query = this.productRepository.createQueryBuilder();
+    try {
+      return await query.delete().where({}).execute();
+    } catch (error) {
+      this.handleDbExceptions(error);
+    }
   }
 }
