@@ -2,7 +2,6 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   BadRequestException,
-  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -13,6 +12,8 @@ import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { LoginUserDto } from './dto';
+import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
@@ -22,6 +23,7 @@ export class AuthService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly configService: ConfigService,
+    private readonly jwtService: JwtService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -38,9 +40,8 @@ export class AuthService {
       const { id, email, fullName } = user;
 
       return {
-        id,
-        email,
-        fullName,
+        ...user,
+        token: this.getJwtToken({ email }),
       };
     } catch (error) {
       this.handleDbErrors(error);
@@ -57,8 +58,13 @@ export class AuthService {
       throw new UnauthorizedException('Not valid credentials.');
 
     return {
-      access_token: 'access_token',
+      ...user,
+      token: this.getJwtToken({ email }),
     };
+  }
+
+  private getJwtToken(payload: JwtPayload) {
+    return this.jwtService.sign(payload);
   }
 
   private handleDbErrors(error: any): never {
