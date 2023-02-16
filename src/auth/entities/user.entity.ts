@@ -32,7 +32,7 @@ export class User {
   isActive: boolean;
 
   @Column('simple-array', {
-    default: 'user',
+    default: 'USER',
   })
   roles: string[];
 
