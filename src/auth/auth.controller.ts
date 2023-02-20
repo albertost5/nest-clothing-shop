@@ -63,7 +63,7 @@ export class AuthController {
   @Auth(ValidRoles.ADMIN)
   testingPrivateRoute3(@GetUser() user: User) {
     return {
-      message: `Allowed! User's roles: [${ user.roles }]`
+      message: `Allowed! User's roles: [${user.roles}]`,
     };
   }
 }

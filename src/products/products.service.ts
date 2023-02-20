@@ -12,6 +12,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { validate as isUUID } from 'uuid';
 import { Product, ProductImage } from './entities';
+import { User } from 'src/auth/entities/user.entity';
 
 @Injectable()
 export class ProductsService {
@@ -25,7 +26,7 @@ export class ProductsService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async create(createProductDto: CreateProductDto) {
+  async create(createProductDto: CreateProductDto, user: User) {
     const { images = [], ...productDetails } = createProductDto;
 
     try {
@@ -35,11 +36,13 @@ export class ProductsService {
         images: images.map((imageUrl) =>
           this.productImageRepository.create({ url: imageUrl }),
         ),
+        user,
       });
+
       await this.productRepository.save(product);
 
       // Spread operator to don't show the images id
-      return { ...product, images };
+      return { ...product, images, user: user.id };
     } catch (error) {
       this.handleDbExceptions(error);
     }
@@ -55,9 +58,15 @@ export class ProductsService {
         //   images: true
         // }
       });
-      return products.map(({ images, ...product }) => ({
+
+      return products.map(({ images, user, ...product }) => ({
         ...product,
         images: images.map((image) => image.url),
+        user: {
+          id: user.id,
+          email: user.email,
+          roles: user.roles,
+        },
       }));
     } catch (error) {
       throw new NotFoundException('Products not found.');
@@ -88,20 +97,28 @@ export class ProductsService {
   }
 
   async findOnePlain(term: string) {
-    const { images = [], ...product } = await this.findOne(term);
+    const { images = [], user, ...product } = await this.findOne(term);
     return {
       ...product,
       images: images.map((image) => image.url),
+      user: {
+        id: user.id,
+        email: user.email,
+        roles: user.roles,
+      },
     };
   }
 
-  async update(id: string, updateProductDto: UpdateProductDto) {
+  async update(id: string, updateProductDto: UpdateProductDto, user: User) {
     const { images, ...newProductProperties } = updateProductDto;
 
     const product = await this.productRepository.preload({
       id,
       ...newProductProperties,
+      user,
     });
+
+    console.log(product);
 
     if (!product)
       throw new NotFoundException(`Product with id ${id} not found.`);
