@@ -9,7 +9,12 @@ import {
 import { AuthService } from './auth.service';
 import { CreateUserDto, LoginUserDto } from './dto/index';
 import { AuthGuard } from '@nestjs/passport';
-import { GetUser, GetRawHeaders, RoleProtected } from './decorators/index';
+import {
+  GetUser,
+  GetRawHeaders,
+  RoleProtected,
+  Auth,
+} from './decorators/index';
 import { User } from './entities/user.entity';
 import { UserRoleGuard } from './guards/user-role.guard';
 import { ValidRoles } from './interfaces';
@@ -51,6 +56,14 @@ export class AuthController {
     return {
       user,
       ok: true,
+    };
+  }
+
+  @Get('private3')
+  @Auth(ValidRoles.ADMIN)
+  testingPrivateRoute3(@GetUser() user: User) {
+    return {
+      message: `Allowed! User's roles: [${ user.roles }]`
     };
   }
 }
