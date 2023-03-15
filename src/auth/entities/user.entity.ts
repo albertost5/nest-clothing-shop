@@ -7,6 +7,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+// import * as bcrypt from 'bcrypt';
 
 @Entity('users')
 export class User {
@@ -44,6 +45,7 @@ export class User {
   @BeforeInsert()
   checkFieldsBeforeInsert() {
     this.email = this.email.toLowerCase().trim();
+    // this.password = bcrypt.hashSync(this.password, +process.env.ROUNDS);
   }
 
   @BeforeUpdate()

@@ -51,7 +51,16 @@ export class AuthService {
   async loginUser(loginUserDto: LoginUserDto) {
     const { email, password } = loginUserDto;
 
-    const user = await this.userRepository.findOneBy({ email });
+    const user = await this.userRepository.findOne({
+      where: {
+        email,
+      },
+      select: {
+        id: true,
+        email: true,
+        password: true,
+      },
+    });
 
     if (!user || !bcrypt.compareSync(password, user.password))
       // Not knowing if its an invalid email or password.
