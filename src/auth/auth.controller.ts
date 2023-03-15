@@ -4,7 +4,6 @@ import {
   Body,
   Get,
   UseGuards,
-  SetMetadata,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto, LoginUserDto } from './dto/index';
@@ -65,5 +64,11 @@ export class AuthController {
     return {
       message: `Allowed! User's roles: [${user.roles}]`,
     };
+  }
+
+  @Get('check-status')
+  @Auth()
+  checkAuthStatus(@GetUser() user: User) {
+    return this.authService.checkAuthStatus(user);
   }
 }

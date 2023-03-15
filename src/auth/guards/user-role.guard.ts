@@ -3,6 +3,7 @@ import {
   ExecutionContext,
   ForbiddenException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
@@ -12,19 +13,22 @@ import { META_ROLES } from '../decorators/role-protected.decorator';
 
 @Injectable()
 export class UserRoleGuard implements CanActivate {
+  
+  private readonly logger = new Logger(UserRoleGuard.name);
+
   constructor(private readonly reflector: Reflector) {}
 
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    console.log('UseRoleGuard start...');
+    this.logger.log('UseRoleGuard start...');
 
     const validRoles: string[] = this.reflector.get<string[]>(
       META_ROLES,
       context.getHandler(),
     );
 
-    console.log({ validRoles });
+    this.logger.log(`Valid roles: ${ JSON.stringify(validRoles) }`);
 
     if (!validRoles || validRoles.length === 0) return true;
 
