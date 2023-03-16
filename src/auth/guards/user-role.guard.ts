@@ -13,7 +13,6 @@ import { META_ROLES } from '../decorators/role-protected.decorator';
 
 @Injectable()
 export class UserRoleGuard implements CanActivate {
-  
   private readonly logger = new Logger(UserRoleGuard.name);
 
   constructor(private readonly reflector: Reflector) {}
@@ -28,7 +27,7 @@ export class UserRoleGuard implements CanActivate {
       context.getHandler(),
     );
 
-    this.logger.log(`Valid roles: ${ JSON.stringify(validRoles) }`);
+    this.logger.log(`Valid roles: ${JSON.stringify(validRoles)}`);
 
     if (!validRoles || validRoles.length === 0) return true;
 

@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger/dist/decorators';
 import {
   IsArray,
   IsIn,
@@ -11,43 +11,53 @@ import {
 } from 'class-validator';
 
 export class CreateProductDto {
+  @ApiProperty({
+    description: 'Product title (unique)',
+    nullable: false,
+    minLength: 1,
+  })
   @IsString()
   @MinLength(1)
   title: string;
 
+  @ApiProperty()
   @IsNumber()
   @IsPositive()
   @IsOptional()
   price?: number;
 
+  @ApiProperty()
   @IsString()
   @IsOptional()
   description?: string;
 
+  @ApiProperty()
   @IsString()
   @IsOptional()
   slug?: string;
 
-  @IsNumber()
+  @ApiProperty()
   @IsInt()
   @IsPositive()
   @IsOptional()
   stock?: number;
 
+  @ApiProperty()
   @IsString({ each: true })
   @IsArray()
   sizes: string[];
 
-  @IsString()
+  @ApiProperty()
   @IsIn(['men', 'women', 'kid', 'unisex'])
-  @MinLength(1)
   gender: string;
 
+  @ApiProperty()
   @IsString({ each: true })
   @IsArray()
   @IsOptional()
-  tags?: string[];
+  tags: string[];
 
+  @ApiProperty()
   @IsString({ each: true })
   @IsArray()
   @IsOptional()

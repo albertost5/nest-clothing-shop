@@ -85,10 +85,10 @@ export class AuthService {
     throw new InternalServerErrorException('Check internal logs.');
   }
 
-  async checkAuthStatus( user: User ) {
+  async checkAuthStatus(user: User) {
     return {
       ...user,
       token: this.getJwtToken({ id: user.id }),
-    };  
+    };
   }
 }

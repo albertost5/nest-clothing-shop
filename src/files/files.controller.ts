@@ -14,7 +14,9 @@ import { FilesService } from './files.service';
 import { fileFilter, fileNamer } from './helpers/index';
 import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
+import { ApiTags } from '@nestjs/swagger/dist';
 
+@ApiTags('Images')
 @Controller('files')
 export class FilesController {
   constructor(
@@ -38,7 +40,7 @@ export class FilesController {
   ) {
     if (!file) throw new NotFoundException('There is no file');
 
-    const SECURE_URL = `${this.configService.get('HOST_API')}/files/product/${
+    const SECURE_URL = `${this.configService.get('BASE_PATH')}/files/product/${
       file.filename
     } `;
 
